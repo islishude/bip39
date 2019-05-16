@@ -59,26 +59,23 @@ func NewMnemonic(wordsLen int, lang Language) (string, error) {
 }
 
 func entropyToMnemonic(entropy []byte, wordsLen int, lang Language) (string, error) {
-	var binEntBuf strings.Builder
+	var binEntBuf string
 	{
 		for _, v := range entropy {
-			tmp := fmt.Sprintf("%08b", v)
-			binEntBuf.WriteString(tmp)
+			binEntBuf += fmt.Sprintf("%08b", v)
 		}
 		hash := sha256.New()
 		hash.Write(entropy)
 		cs1stByte := hash.Sum(nil)[0]
 		csBinStr := fmt.Sprintf("%08b", cs1stByte)
 		// len(entropy)/4 = len(entroy) * 8 / 32
-		binEntBuf.WriteString(csBinStr[:len(entropy)/4])
+		binEntBuf += csBinStr[:len(entropy)/4]
 	}
-
-	binEnt := binEntBuf.String()
 
 	words := make([]string, 0, wordsLen)
 	wordList := lang.List()
-	for i := 0; i < len(binEnt); i += 11 {
-		idx, err := strconv.ParseInt(binEnt[i:i+11], 2, 32)
+	for i := 0; i < len(binEntBuf); i += 11 {
+		idx, err := strconv.ParseInt(binEntBuf[i:i+11], 2, 32)
 		if err != nil {
 			return "", err
 		}
@@ -145,7 +142,7 @@ func IsMnemonicValid(mnemonic string, lang Language) bool {
 }
 
 func mnemonicToEntropy(wordList []string, wordMapping map[string]int) string {
-	var entBuf strings.Builder
+	var strBuf string
 	for _, v := range wordList {
 		idx, has := wordMapping[v]
 		if !has {
@@ -156,7 +153,7 @@ func mnemonicToEntropy(wordList []string, wordMapping map[string]int) string {
 		if rpt := 11 - len(x); rpt != 0 {
 			x = strings.Repeat("0", rpt) + x
 		}
-		entBuf.WriteString(x)
+		strBuf += x
 	}
-	return entBuf.String()
+	return strBuf
 }
