@@ -8,7 +8,7 @@ import (
 
 // 0b11111111111
 var last11BitsMask = big.NewInt(2047)
-var shift11BitsMask = big.NewInt(2048)
+var first11BitsMask = big.NewInt(2048)
 
 // fromEntropy creates mnemonic from an entropy
 func fromEntropy(entropy []byte, wordLen int, lg Language) string {
@@ -31,7 +31,7 @@ func fromEntropy(entropy []byte, wordLen int, lg Language) string {
 	wordIdx := new(big.Int)
 	for i := wordLen - 1; i >= 0; i-- {
 		wordIdx.And(entInt, last11BitsMask)
-		entInt.Div(entInt, shift11BitsMask)
+		entInt.Div(entInt, first11BitsMask)
 		wordList[i] = lgList[wordIdx.Int64()]
 	}
 
