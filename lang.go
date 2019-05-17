@@ -1,4 +1,4 @@
-package lang
+package bip39
 
 import "github.com/islishude/bip39/internal/wordlist"
 
@@ -19,40 +19,40 @@ const (
 
 // Words Mapping
 var (
-	ChineseSimplifiedMapping  = make(map[string]int64, 2048)
-	ChineseTraditionalMapping = make(map[string]int64, 2048)
-	EnglishMapping            = make(map[string]int64, 2048)
-	FrenchMapping             = make(map[string]int64, 2048)
-	ItalianMapping            = make(map[string]int64, 2048)
-	JapaneseMapping           = make(map[string]int64, 2048)
-	KoreanMapping             = make(map[string]int64, 2048)
-	SpanishMapping            = make(map[string]int64, 2048)
+	chineseSimplifiedMapping  = make(map[string]int64, 2048)
+	chineseTraditionalMapping = make(map[string]int64, 2048)
+	englishMapping            = make(map[string]int64, 2048)
+	frenchMapping             = make(map[string]int64, 2048)
+	italianMapping            = make(map[string]int64, 2048)
+	japaneseMapping           = make(map[string]int64, 2048)
+	koreanMapping             = make(map[string]int64, 2048)
+	spanishMapping            = make(map[string]int64, 2048)
 )
 
 func init() {
 	for idx, word := range wordlist.ChineseSimplified {
-		ChineseSimplifiedMapping[word] = int64(idx)
+		chineseSimplifiedMapping[word] = int64(idx)
 	}
 	for idx, word := range wordlist.ChineseTraditional {
-		ChineseTraditionalMapping[word] = int64(idx)
+		chineseTraditionalMapping[word] = int64(idx)
 	}
 	for idx, word := range wordlist.English {
-		EnglishMapping[word] = int64(idx)
+		englishMapping[word] = int64(idx)
 	}
 	for idx, word := range wordlist.French {
-		FrenchMapping[word] = int64(idx)
+		frenchMapping[word] = int64(idx)
 	}
 	for idx, word := range wordlist.Italian {
-		ItalianMapping[word] = int64(idx)
+		italianMapping[word] = int64(idx)
 	}
 	for idx, word := range wordlist.Japanese {
-		JapaneseMapping[word] = int64(idx)
+		japaneseMapping[word] = int64(idx)
 	}
 	for idx, word := range wordlist.Spanish {
-		SpanishMapping[word] = int64(idx)
+		spanishMapping[word] = int64(idx)
 	}
 	for idx, word := range wordlist.Korean {
-		KoreanMapping[word] = int64(idx)
+		koreanMapping[word] = int64(idx)
 	}
 }
 
@@ -79,25 +79,25 @@ func (lan Language) List() []string {
 	return nil
 }
 
-// Mapping returns word index mapping
-func (lan Language) Mapping() map[string]int64 {
+// mapping returns word index mapping
+func (lan Language) mapping() map[string]int64 {
 	switch lan {
 	case ChineseSimplified:
-		return ChineseSimplifiedMapping
+		return chineseSimplifiedMapping
 	case ChineseTraditional:
-		return ChineseTraditionalMapping
+		return chineseTraditionalMapping
 	case English:
-		return EnglishMapping
+		return englishMapping
 	case French:
-		return FrenchMapping
+		return frenchMapping
 	case Italian:
-		return ItalianMapping
+		return italianMapping
 	case Japanese:
-		return JapaneseMapping
+		return japaneseMapping
 	case Spanish:
-		return SpanishMapping
+		return spanishMapping
 	case Korean:
-		return KoreanMapping
+		return koreanMapping
 	}
 	return nil
 }

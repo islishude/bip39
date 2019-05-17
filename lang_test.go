@@ -1,4 +1,4 @@
-package lang
+package bip39
 
 import (
 	"reflect"

@@ -4,35 +4,25 @@ package bip39
 import (
 	"crypto/rand"
 	"crypto/sha512"
-	"errors"
 
-	"github.com/islishude/bip39/internal/lang"
-	"github.com/islishude/bip39/internal/mnemonic"
 	"golang.org/x/crypto/pbkdf2"
 	"golang.org/x/text/unicode/norm"
 )
 
-// Error list
-var (
-	ErrWordLen         = errors.New("Invalid word list length")
-	ErrEntropyLen      = errors.New("Invalid entropy length")
-	ErrInvalidMnemonic = errors.New("Invalid mnemonic")
-)
-
 // NewMnemonicByEntropy generates new mnemonic by entropy provided
-func NewMnemonicByEntropy(entropy []byte, lang lang.Language) (string, error) {
+func NewMnemonicByEntropy(entropy []byte, lang Language) (string, error) {
 	entLen := len(entropy)
 	// 128 <= ENT <= 256
 	if entLen < 16 || entLen > 32 || entLen%4 != 0 {
 		return "", ErrEntropyLen
 	}
-	return mnemonic.FromEntropy(entropy, entLen/4*3, lang), nil
+	return fromEntropy(entropy, entLen/4*3, lang), nil
 }
 
 // NewMnemonic generates new mnemonic by words length
-func NewMnemonic(wordsLen int, lang lang.Language) (string, error) {
+func NewMnemonic(length int, lang Language) (string, error) {
 	// word length should be 12 | 15 | 18 | 21 | 24
-	if wordsLen < 12 || wordsLen > 24 || wordsLen%3 != 0 {
+	if length < 12 || length > 24 || length%3 != 0 {
 		return "", ErrWordLen
 	}
 
@@ -48,15 +38,15 @@ func NewMnemonic(wordsLen int, lang lang.Language) (string, error) {
 		|  224  |  7 |   231  |  21  |
 		|  256  |  8 |   264  |  24  |
 	*/
-	entropy := make([]byte, wordsLen+wordsLen/3)
+	entropy := make([]byte, length+length/3)
 	if _, err := rand.Read(entropy); err != nil {
 		return "", err
 	}
 
-	return mnemonic.FromEntropy(entropy, wordsLen, lang), nil
+	return fromEntropy(entropy, length, lang), nil
 }
 
-// MnemonicToSeed creates seed by mnemonic.
+// MnemonicToSeed creates seed by
 // param passwd can be empty string
 func MnemonicToSeed(mnemonic string, passwd string) ([]byte, error) {
 	if mnemonic == "" {
@@ -68,9 +58,6 @@ func MnemonicToSeed(mnemonic string, passwd string) ([]byte, error) {
 }
 
 // IsMnemonicValid validate menemonic
-func IsMnemonicValid(m string, lg lang.Language) bool {
-	if err := mnemonic.ValidMnemonic(m, lg); err != nil {
-		return false
-	}
-	return true
+func IsMnemonicValid(m string, lg Language) bool {
+	return CheckMnemonic(m, lg) == nil
 }

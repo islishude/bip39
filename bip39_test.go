@@ -5,14 +5,12 @@ import (
 	"fmt"
 	"reflect"
 	"testing"
-
-	"github.com/islishude/bip39/internal/lang"
 )
 
 func TestIsMnemonicValid(t *testing.T) {
 	type args struct {
 		mnemonic string
-		lang     lang.Language
+		lang     Language
 	}
 	tests := []struct {
 		name string
@@ -23,7 +21,7 @@ func TestIsMnemonicValid(t *testing.T) {
 			name: "English",
 			args: args{
 				mnemonic: "check fiscal fit sword unlock rough lottery tool sting pluck bulb random",
-				lang:     lang.English,
+				lang:     English,
 			},
 			want: true,
 		},
@@ -31,7 +29,7 @@ func TestIsMnemonicValid(t *testing.T) {
 			name: "Englishx2",
 			args: args{
 				mnemonic: "rich soon pool legal busy add couch tower goose security raven anger",
-				lang:     lang.English,
+				lang:     English,
 			},
 			want: true,
 		},
@@ -39,7 +37,7 @@ func TestIsMnemonicValid(t *testing.T) {
 			name: "EnglishValidLength",
 			args: args{
 				mnemonic: "rich soon pool legal busy add couch tower goose security raven",
-				lang:     lang.English,
+				lang:     English,
 			},
 			want: false,
 		},
@@ -47,7 +45,7 @@ func TestIsMnemonicValid(t *testing.T) {
 			name: "EnglishNoWord",
 			args: args{
 				mnemonic: "rich soon pool legal busy add couch tower goose security women",
-				lang:     lang.English,
+				lang:     English,
 			},
 			want: false,
 		},
@@ -55,7 +53,7 @@ func TestIsMnemonicValid(t *testing.T) {
 			name: "EnglishChecksumError",
 			args: args{
 				mnemonic: "rich soon pool legal busy add couch tower goose security base",
-				lang:     lang.English,
+				lang:     English,
 			},
 			want: false,
 		},
@@ -63,7 +61,7 @@ func TestIsMnemonicValid(t *testing.T) {
 			name: "ChineseSimplified",
 			args: args{
 				mnemonic: "氮 冠 锋 枪 做 到 容 枯 获 槽 弧 部",
-				lang:     lang.ChineseSimplified,
+				lang:     ChineseSimplified,
 			},
 			want: true,
 		},
@@ -71,7 +69,7 @@ func TestIsMnemonicValid(t *testing.T) {
 			name: "ChineseTraditional",
 			args: args{
 				mnemonic: "氮 冠 鋒 槍 做 到 容 枯 獲 槽 弧 部",
-				lang:     lang.ChineseTraditional,
+				lang:     ChineseTraditional,
 			},
 			want: true,
 		},
@@ -79,7 +77,7 @@ func TestIsMnemonicValid(t *testing.T) {
 			name: "Japanese",
 			args: args{
 				mnemonic: "ねほりはほり　ひらがな　とさか　そつう　おうじ　あてな　きくらげ　みもと　してつ　ぱそこん　にってい　いこつ",
-				lang:     lang.Japanese,
+				lang:     Japanese,
 			},
 			want: true,
 		},
@@ -87,7 +85,7 @@ func TestIsMnemonicValid(t *testing.T) {
 			name: "Spanish",
 			args: args{
 				mnemonic: "posible ruptura ozono ligero bobina acto chuleta tetera gol realidad pez alerta",
-				lang:     lang.Spanish,
+				lang:     Spanish,
 			},
 			want: true,
 		},
@@ -95,7 +93,7 @@ func TestIsMnemonicValid(t *testing.T) {
 			name: "French",
 			args: args{
 				mnemonic: "pieuvre revivre nuptial implorer blinder accroche chute syntaxe félin promener parcelle aimable",
-				lang:     lang.French,
+				lang:     French,
 			},
 			want: true,
 		},
@@ -103,7 +101,7 @@ func TestIsMnemonicValid(t *testing.T) {
 			name: "Italian",
 			args: args{
 				mnemonic: "risultato siccome prenotare mimosa bosco adottare continuo tifare ignaro sbloccato residente alticcio",
-				lang:     lang.Italian,
+				lang:     Italian,
 			},
 			want: true,
 		},
@@ -111,7 +109,7 @@ func TestIsMnemonicValid(t *testing.T) {
 			name: "Korean",
 			args: args{
 				mnemonic: "전망 차선 이전 실장 기간 간판 대접 판단 생명 존재 잠깐 건축",
-				lang:     lang.Korean,
+				lang:     Korean,
 			},
 			want: true,
 		},
@@ -128,7 +126,7 @@ func TestIsMnemonicValid(t *testing.T) {
 func ExampleIsMnemonicValid() {
 	var mnemonic = "check fiscal fit sword unlock" +
 		" rough lottery tool sting pluck bulb random"
-	fmt.Println(IsMnemonicValid(mnemonic, lang.English))
+	fmt.Println(IsMnemonicValid(mnemonic, English))
 
 	// Output:
 	// true
@@ -137,7 +135,7 @@ func ExampleIsMnemonicValid() {
 func TestNewMnemonic(t *testing.T) {
 	type args struct {
 		wordsLen int
-		lang     lang.Language
+		lang     Language
 		skip     bool
 	}
 	tests := []struct {
@@ -188,7 +186,7 @@ func TestNewMnemonic(t *testing.T) {
 func TestMnemonicByEntropy(t *testing.T) {
 	type args struct {
 		entropy []byte
-		lang    lang.Language
+		lang    Language
 		skip    bool
 	}
 	tests := []struct {
@@ -300,22 +298,22 @@ func TestMnemonicToSeed(t *testing.T) {
 
 func ExampleNewMnemonic() {
 	// Words length can be 12 | 15 | 18 | 21 | 24
-	NewMnemonic(12, lang.ChineseSimplified)
-	NewMnemonic(24, lang.ChineseTraditional)
-	NewMnemonic(12, lang.English)
-	NewMnemonic(15, lang.French)
-	NewMnemonic(18, lang.Italian)
-	NewMnemonic(21, lang.Japanese)
-	NewMnemonic(24, lang.French)
-	NewMnemonic(15, lang.Korean)
-	NewMnemonic(15, lang.Spanish)
+	NewMnemonic(12, ChineseSimplified)
+	NewMnemonic(24, ChineseTraditional)
+	NewMnemonic(12, English)
+	NewMnemonic(15, French)
+	NewMnemonic(18, Italian)
+	NewMnemonic(21, Japanese)
+	NewMnemonic(24, French)
+	NewMnemonic(15, Korean)
+	NewMnemonic(15, Spanish)
 }
 
 func ExampleMnemonicToSeed() {
 	mnemonic := "jungle devote wisdom slim" +
 		" census orbit merge order flip sketch add mass"
 
-	fmt.Println(IsMnemonicValid(mnemonic, lang.English))
+	fmt.Println(IsMnemonicValid(mnemonic, English))
 
 	// Output:
 	// true
@@ -323,7 +321,7 @@ func ExampleMnemonicToSeed() {
 
 func ExampleNewMnemonicByEntropy() {
 	entropy, _ := hex.DecodeString("79079bf165e25537e2dce15919440cc4")
-	mnemonic, _ := NewMnemonicByEntropy(entropy, lang.English)
+	mnemonic, _ := NewMnemonicByEntropy(entropy, English)
 	fmt.Println(mnemonic)
 
 	// Output:
