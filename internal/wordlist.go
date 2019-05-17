@@ -9,10 +9,12 @@ import (
 	"os"
 	"os/exec"
 	"strings"
-	"sync"
+
+	"golang.org/x/sync/errgroup"
 )
 
 const url = "https://raw.githubusercontent.com/bitcoin/bips/master/bip-0039/"
+const dirName = "wordlist"
 
 var langs = []string{
 	"chinese_simplified", "chinese_traditional",
@@ -20,104 +22,81 @@ var langs = []string{
 	"japanese", "korean", "spanish",
 }
 
-const dirName = "wordlist"
+func getExportName(idx int) string {
+	var exportName string
+	switch idx {
+	case 0:
+		exportName = "ChineseSimplified"
+	case 1:
+		exportName = "ChineseTraditional"
+	case 2:
+		exportName = "English"
+	case 3:
+		exportName = "French"
+	case 4:
+		exportName = "Italian"
+	case 5:
+		exportName = "Japanese"
+	case 6:
+		exportName = "Korean"
+	case 7:
+		exportName = "Spanish"
+	}
+	return exportName
+}
 
-func main() {
-
-	{
-		// clean old data
-		fd, err := os.Open(dirName)
-		if err == nil {
-			if err := os.RemoveAll(dirName); err != nil {
-				log.Fatal(err)
-			}
-		}
-		fd.Close()
-
-		// create new word list dir
-		if err := os.MkdirAll(dirName, os.ModePerm); err != nil {
+func init() {
+	// clean old data
+	fd, err := os.Open(dirName)
+	if err == nil {
+		if err := os.RemoveAll(dirName); err != nil {
 			log.Fatal(err)
 		}
 	}
+	defer fd.Close()
 
-	errchan := make(chan error)
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-	go func() {
-		defer close(errchan)
-		wg := new(sync.WaitGroup)
-		wg.Add(len(langs))
-		for idx, lang := range langs {
-			go func(idx int, lang string) {
-				defer wg.Done()
-				select {
-				case <-ctx.Done():
-					return
-				default:
+	// create new word list dir
+	if err := os.MkdirAll(dirName, os.ModePerm); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func main() {
+	eg, ctx := errgroup.WithContext(context.Background())
+	for idx, lang := range langs {
+		idx, lang := idx, lang
+		eg.Go(func() error {
+			select {
+			case <-ctx.Done():
+				return ctx.Err()
+			default:
+			}
+			resp, err := http.Get(url + lang + ".txt")
+			if err != nil {
+				return err
+			}
+			defer resp.Body.Close()
+
+			src, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return err
+			}
+
+			exportName := getExportName(idx)
+			content := fmt.Sprintf("package wordlist\n// %s is word list\n var %s = []string{", exportName, exportName)
+			res := strings.Split(string(src), "\n")
+			for _, v := range res {
+				if v == "" {
+					continue
 				}
-				resp, err := http.Get(url + lang + ".txt")
-				if err != nil {
-					errchan <- err
-					return
-				}
-				defer resp.Body.Close()
-
-				src, err := ioutil.ReadAll(resp.Body)
-				if err != nil {
-					errchan <- err
-					return
-				}
-
-				var exportName string
-				switch idx {
-				case 0:
-					exportName = "ChineseSimplified"
-				case 1:
-					exportName = "ChineseTraditional"
-				case 2:
-					exportName = "English"
-				case 3:
-					exportName = "French"
-				case 4:
-					exportName = "Italian"
-				case 5:
-					exportName = "Japanese"
-				case 6:
-					exportName = "Korean"
-				case 7:
-					exportName = "Spanish"
-				}
-
-				content := fmt.Sprintf("package wordlist\n var %s = []string{", exportName)
-
-				res := strings.Split(string(src), "\n")
-				for _, v := range res {
-					if v == "" {
-						continue
-					}
-					content += `"` + v + `", `
-				}
-
-				content += "}"
-
-				if err := ioutil.WriteFile(dirName+"/"+lang+".go", []byte(content), os.ModePerm); err != nil {
-					errchan <- err
-					return
-				}
-			}(idx, lang)
-		}
-		wg.Wait()
-	}()
-
-	var err error
-	for v := range errchan {
-		if v != nil {
-			err = v
-			cancel()
-		}
+				content += `"` + v + `", `
+			}
+			content += "}"
+			return ioutil.WriteFile(dirName+"/"+lang+".go", []byte(content), os.ModePerm)
+		})
 	}
 
-	if err != nil {
+	if err := eg.Wait(); err != nil {
 		log.Fatal(err)
 	}
 
@@ -126,5 +105,5 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fmt.Println("Update successful!")
+	log.Println("Update successful!")
 }

@@ -17,6 +17,45 @@ const (
 	Spanish
 )
 
+// Words Mapping
+var (
+	chineseSimplifiedMapping  = make(map[string]int64, 2048)
+	chineseTraditionalMapping = make(map[string]int64, 2048)
+	englishMapping            = make(map[string]int64, 2048)
+	frenchMapping             = make(map[string]int64, 2048)
+	italianMapping            = make(map[string]int64, 2048)
+	japaneseMapping           = make(map[string]int64, 2048)
+	koreanMapping             = make(map[string]int64, 2048)
+	spanishMapping            = make(map[string]int64, 2048)
+)
+
+func init() {
+	for idx, word := range wordlist.ChineseSimplified {
+		chineseSimplifiedMapping[word] = int64(idx)
+	}
+	for idx, word := range wordlist.ChineseTraditional {
+		chineseTraditionalMapping[word] = int64(idx)
+	}
+	for idx, word := range wordlist.English {
+		englishMapping[word] = int64(idx)
+	}
+	for idx, word := range wordlist.French {
+		frenchMapping[word] = int64(idx)
+	}
+	for idx, word := range wordlist.Italian {
+		italianMapping[word] = int64(idx)
+	}
+	for idx, word := range wordlist.Japanese {
+		japaneseMapping[word] = int64(idx)
+	}
+	for idx, word := range wordlist.Spanish {
+		spanishMapping[word] = int64(idx)
+	}
+	for idx, word := range wordlist.Korean {
+		koreanMapping[word] = int64(idx)
+	}
+}
+
 // List gets word list
 func (lan Language) List() []string {
 	switch lan {
@@ -36,6 +75,29 @@ func (lan Language) List() []string {
 		return wordlist.Spanish
 	case Korean:
 		return wordlist.Korean
+	}
+	return nil
+}
+
+// mapping returns word index mapping
+func (lan Language) mapping() map[string]int64 {
+	switch lan {
+	case ChineseSimplified:
+		return chineseSimplifiedMapping
+	case ChineseTraditional:
+		return chineseTraditionalMapping
+	case English:
+		return englishMapping
+	case French:
+		return frenchMapping
+	case Italian:
+		return italianMapping
+	case Japanese:
+		return japaneseMapping
+	case Spanish:
+		return spanishMapping
+	case Korean:
+		return koreanMapping
 	}
 	return nil
 }
