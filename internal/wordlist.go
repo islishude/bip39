@@ -16,33 +16,16 @@ import (
 const url = "https://raw.githubusercontent.com/bitcoin/bips/master/bip-0039/"
 const dirName = "wordlist"
 
-var langs = []string{
-	"chinese_simplified", "chinese_traditional",
-	"english", "french", "italian",
-	"japanese", "korean", "spanish",
-}
-
-func getExportName(idx int) string {
-	var exportName string
-	switch idx {
-	case 0:
-		exportName = "ChineseSimplified"
-	case 1:
-		exportName = "ChineseTraditional"
-	case 2:
-		exportName = "English"
-	case 3:
-		exportName = "French"
-	case 4:
-		exportName = "Italian"
-	case 5:
-		exportName = "Japanese"
-	case 6:
-		exportName = "Korean"
-	case 7:
-		exportName = "Spanish"
-	}
-	return exportName
+// path => export_name
+var langs = map[string]string{
+	"chinese_simplified":  "ChineseSimplified",
+	"chinese_traditional": "ChineseTraditional",
+	"english":             "English",
+	"french":              "French",
+	"italian":             "Italian",
+	"japanese":            "Japanese",
+	"korean":              "Korean",
+	"spanish":             "Spanish",
 }
 
 func init() {
@@ -63,15 +46,15 @@ func init() {
 
 func main() {
 	eg, ctx := errgroup.WithContext(context.Background())
-	for idx, lang := range langs {
-		idx, lang := idx, lang
+	for path, name := range langs {
+		path, name := path, name
 		eg.Go(func() error {
 			select {
 			case <-ctx.Done():
 				return ctx.Err()
 			default:
 			}
-			resp, err := http.Get(url + lang + ".txt")
+			resp, err := http.Get(url + path + ".txt")
 			if err != nil {
 				return err
 			}
@@ -82,8 +65,7 @@ func main() {
 				return err
 			}
 
-			exportName := getExportName(idx)
-			content := fmt.Sprintf("package wordlist\n// %s is word list\n var %s = []string{", exportName, exportName)
+			content := fmt.Sprintf("package wordlist\n var %s = []string{", name)
 			res := strings.Split(string(src), "\n")
 			for _, v := range res {
 				if v == "" {
@@ -92,7 +74,7 @@ func main() {
 				content += `"` + v + `", `
 			}
 			content += "}"
-			return ioutil.WriteFile(dirName+"/"+lang+".go", []byte(content), os.ModePerm)
+			return ioutil.WriteFile(dirName+"/"+path+".go", []byte(content), os.ModePerm)
 		})
 	}
 
