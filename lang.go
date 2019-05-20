@@ -56,15 +56,15 @@ func init() {
 	}
 }
 
-// List gets word list
-func (lan Language) List() []string {
+// list gets word list
+func (lan Language) list() [2048]string {
 	switch lan {
+	case English:
+		return wordlist.English
 	case ChineseSimplified:
 		return wordlist.ChineseSimplified
 	case ChineseTraditional:
 		return wordlist.ChineseTraditional
-	case English:
-		return wordlist.English
 	case French:
 		return wordlist.French
 	case Italian:
@@ -75,8 +75,9 @@ func (lan Language) List() []string {
 		return wordlist.Spanish
 	case Korean:
 		return wordlist.Korean
+	default:
+		return wordlist.English
 	}
-	return nil
 }
 
 // mapping returns word index mapping

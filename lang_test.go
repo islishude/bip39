@@ -11,7 +11,7 @@ func TestLanguage_List(t *testing.T) {
 	tests := []struct {
 		name string
 		lan  Language
-		want []string
+		want [2048]string
 	}{
 		{
 			name: "ChineseSimplified",
@@ -56,12 +56,12 @@ func TestLanguage_List(t *testing.T) {
 		{
 			name: "Unsupports",
 			lan:  100,
-			want: nil,
+			want: wordlist.English,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.lan.List(); !reflect.DeepEqual(got, tt.want) {
+			if got := tt.lan.list(); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Language.List() = %v, want %v", got, tt.want)
 			}
 		})

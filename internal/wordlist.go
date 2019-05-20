@@ -65,7 +65,7 @@ func main() {
 				return err
 			}
 
-			content := fmt.Sprintf("package wordlist\n var %s = []string{", name)
+			content := fmt.Sprintf("package wordlist\n var %s = [2048]string{", name)
 			res := strings.Split(string(src), "\n")
 			for _, v := range res {
 				if v == "" {
