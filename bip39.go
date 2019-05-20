@@ -48,16 +48,8 @@ func NewMnemonic(length int, lang Language) (string, error) {
 
 // MnemonicToSeed creates seed by
 // param passwd can be empty string
-func MnemonicToSeed(mnemonic string, passwd string) ([]byte, error) {
-	if mnemonic == "" {
-		return nil, ErrInvalidMnemonic
-	}
+func MnemonicToSeed(mnemonic string, passwd string) []byte {
 	password := []byte(norm.NFKD.String(mnemonic))
 	salt := []byte(norm.NFKD.String("mnemonic" + passwd))
-	return pbkdf2.Key(password, salt, 2048, 64, sha512.New), nil
-}
-
-// IsMnemonicValid validate menemonic
-func IsMnemonicValid(m string, lg Language) bool {
-	return CheckMnemonic(m, lg) == nil
+	return pbkdf2.Key(password, salt, 2048, 64, sha512.New)
 }

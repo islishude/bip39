@@ -9,6 +9,11 @@ import (
 	"golang.org/x/text/unicode/norm"
 )
 
+// IsMnemonicValid validate menemonic
+func IsMnemonicValid(m string, lg Language) bool {
+	return CheckMnemonic(m, lg) == nil
+}
+
 // CheckMnemonic creates entropy from mnemonic
 func CheckMnemonic(mnemonic string, lg Language) error {
 	mnemonic = norm.NFKD.String(mnemonic)
