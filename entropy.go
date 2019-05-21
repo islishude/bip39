@@ -19,7 +19,7 @@ func fromEntropy(entropy []byte, wordLen int, lg Language) string {
 
 	csInt := new(big.Int).SetBytes(checksum)
 	csBitLen := uint(len(entropy) / 4)
-	csInt.Div(csInt, big.NewInt(1<<(8-csBitLen)))
+	csInt.Quo(csInt, big.NewInt(1<<(8-csBitLen)))
 
 	// entropy big int
 	entInt := new(big.Int).SetBytes(entropy)
@@ -31,7 +31,7 @@ func fromEntropy(entropy []byte, wordLen int, lg Language) string {
 	wordIdx := new(big.Int)
 	for i := wordLen - 1; i >= 0; i-- {
 		wordIdx.And(entInt, last11BitsMask)
-		entInt.Div(entInt, first11BitsMask)
+		entInt.Quo(entInt, first11BitsMask)
 		wordList[i] = lgList[wordIdx.Int64()]
 	}
 

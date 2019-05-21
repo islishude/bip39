@@ -44,12 +44,12 @@ func CheckMnemonic(mnemonic string, lg Language) error {
 	csBig := new(big.Int).And(entBig, big.NewInt(shift-1))
 
 	// get real entropy
-	entBytes := entBig.Div(entBig, big.NewInt(shift)).Bytes()
+	entBytes := entBig.Quo(entBig, big.NewInt(shift)).Bytes()
 	// get checksum from real entropy
 	hash := sha256.New()
 	hash.Write(entBytes)
 	sum := new(big.Int).SetBytes(hash.Sum(nil)[0:1])
-	sum.Div(sum, big.NewInt(1<<(8-uint(wordCount/3))))
+	sum.Quo(sum, big.NewInt(1<<(8-uint(wordCount/3))))
 
 	// compare
 	if sum.Cmp(csBig) != 0 {
