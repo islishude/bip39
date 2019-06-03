@@ -11,7 +11,7 @@ func TestLanguage_List(t *testing.T) {
 	tests := []struct {
 		name string
 		lan  Language
-		want [2048]string
+		want []string
 	}{
 		{
 			name: "ChineseSimplified",

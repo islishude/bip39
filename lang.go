@@ -57,7 +57,7 @@ func init() {
 }
 
 // list gets word list
-func (lan Language) list() [2048]string {
+func (lan Language) list() []string {
 	switch lan {
 	case English:
 		return wordlist.English
