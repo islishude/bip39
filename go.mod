@@ -1,6 +1,6 @@
 module github.com/islishude/bip39
 
-go 1.11
+go 1.9
 
 require (
 	golang.org/x/crypto v0.0.0-20191002192127-34f69633bfdc
