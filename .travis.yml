@@ -1,4 +1,6 @@
 language: "go"
+env:
+  - GO111MODULE=on
 go:
   - "1.11"
   - "1.12"
@@ -7,4 +9,4 @@ go:
 git:
   depth: 1
 script:
-  - go test -v -cover ./...
+  - go test -v -cover .
