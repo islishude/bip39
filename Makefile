@@ -1,4 +1,4 @@
 wordlist:
-	cd internal && go run wordlist.go
+	go run tools/main.go
 test:
 	go test .
