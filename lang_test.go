@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/islishude/bip39/internal/wordlist"
+	"github.com/islishude/bip39/wordlist"
 )
 
 func TestLanguage_List(t *testing.T) {

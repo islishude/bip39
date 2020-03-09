@@ -1,6 +1,6 @@
 package bip39
 
-import "github.com/islishude/bip39/internal/wordlist"
+import "github.com/islishude/bip39/wordlist"
 
 // Language is bip39 word lang type
 type Language uint8

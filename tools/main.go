@@ -3,11 +3,11 @@ package main
 import (
 	"context"
 	"fmt"
+	"html/template"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
-	"os/exec"
 	"strings"
 
 	"golang.org/x/sync/errgroup"
@@ -28,23 +28,27 @@ var langs = map[string]string{
 	"spanish":             "Spanish",
 }
 
-func init() {
-	// clean old data
-	fd, err := os.Open(dirName)
-	if err == nil {
-		if err := os.RemoveAll(dirName); err != nil {
-			log.Fatal(err)
-		}
-	}
-	defer fd.Close()
+const text = `package wordlist
 
+var {{.Name}} = []string{ 
+{{ range .Array }}{{if .}} "{{.}}", {{end}} 
+{{ end}}
+}
+`
+
+type Data struct {
+	Name  string
+	Array []string
+}
+
+var filetpl = template.Must(template.New("data").Parse(text))
+
+func main() {
 	// create new word list dir
 	if err := os.MkdirAll(dirName, os.ModePerm); err != nil {
 		log.Fatal(err)
 	}
-}
 
-func main() {
 	eg, ctx := errgroup.WithContext(context.Background())
 	for path, name := range langs {
 		path, name := path, name
@@ -65,25 +69,19 @@ func main() {
 				return err
 			}
 
-			content := fmt.Sprintf("package wordlist\n var %s = []string{", name)
-			res := strings.Split(string(src), "\n")
-			for _, v := range res {
-				if v == "" {
-					continue
-				}
-				content += `"` + v + `", `
+			wfpath := fmt.Sprintf("%s/%s.go", dirName, path)
+			wfile, err := os.OpenFile(wfpath, os.O_CREATE|os.O_TRUNC|os.O_RDWR, 0666)
+			if err != nil {
+				return err
 			}
-			content += "}"
-			return ioutil.WriteFile(dirName+"/"+path+".go", []byte(content), os.ModePerm)
+			defer wfile.Close()
+
+			data := Data{Array: strings.Split(string(src), "\n"), Name: name}
+			return filetpl.Execute(wfile, data)
 		})
 	}
 
 	if err := eg.Wait(); err != nil {
-		log.Fatal(err)
-	}
-
-	cmd := exec.Command("gofmt", "-w", dirName)
-	if err := cmd.Run(); err != nil {
 		log.Fatal(err)
 	}
 
