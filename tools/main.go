@@ -23,6 +23,7 @@ var langs = map[string]string{
 	"japanese":            "Japanese",
 	"korean":              "Korean",
 	"spanish":             "Spanish",
+	"czech":               "Czech",
 }
 
 const text = `package wordlist

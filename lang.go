@@ -15,6 +15,7 @@ const (
 	Japanese
 	Korean
 	Spanish
+	Czech
 )
 
 // Words Mapping
@@ -27,6 +28,7 @@ var (
 	japaneseMapping           = make(map[string]int64, 2048)
 	koreanMapping             = make(map[string]int64, 2048)
 	spanishMapping            = make(map[string]int64, 2048)
+	czechMapping              = make(map[string]int64, 2048)
 )
 
 func init() {
@@ -54,6 +56,9 @@ func init() {
 	for idx, word := range wordlist.Korean {
 		koreanMapping[word] = int64(idx)
 	}
+	for idx, word := range wordlist.Czech {
+		czechMapping[word] = int64(idx)
+	}
 }
 
 // list gets word list
@@ -75,6 +80,8 @@ func (lan Language) list() []string {
 		return wordlist.Spanish
 	case Korean:
 		return wordlist.Korean
+	case Czech:
+		return wordlist.Czech
 	default:
 		return wordlist.English
 	}
@@ -99,6 +106,8 @@ func (lan Language) mapping() map[string]int64 {
 		return spanishMapping
 	case Korean:
 		return koreanMapping
+	case Czech:
+		return czechMapping
 	}
 	return nil
 }

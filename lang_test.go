@@ -54,6 +54,11 @@ func TestLanguage_List(t *testing.T) {
 			want: wordlist.Spanish,
 		},
 		{
+			name: "Czech",
+			lan:  Czech,
+			want: wordlist.Czech,
+		},
+		{
 			name: "Unsupports",
 			lan:  100,
 			want: wordlist.English,
@@ -81,11 +86,8 @@ func TestLanguage_mapping(t *testing.T) {
 		{"Japanese", Japanese, japaneseMapping},
 		{"Spanish", Spanish, spanishMapping},
 		{"Korean", Korean, koreanMapping},
-		{
-			name: "Unknown",
-			lan:  100,
-			want: nil,
-		},
+		{"Czech", Czech, czechMapping},
+		{"Unknown", 100, nil},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
