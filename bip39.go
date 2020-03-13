@@ -4,10 +4,14 @@ package bip39
 import (
 	"crypto/rand"
 	"crypto/sha512"
+	"io"
 
 	"golang.org/x/crypto/pbkdf2"
 	"golang.org/x/text/unicode/norm"
 )
+
+// cryptoRander is test stub
+var cryptoRander = rand.Reader
 
 // NewMnemonicByEntropy generates new mnemonic by entropy provided
 func NewMnemonicByEntropy(entropy []byte, lang Language) (string, error) {
@@ -39,7 +43,7 @@ func NewMnemonic(length int, lang Language) (string, error) {
 		|  256  |  8 |   264  |  24  |
 	*/
 	entropy := make([]byte, length+length/3)
-	if _, err := rand.Read(entropy); err != nil {
+	if _, err := io.ReadFull(cryptoRander, entropy); err != nil {
 		return "", err
 	}
 

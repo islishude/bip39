@@ -116,6 +116,14 @@ func TestIsMnemonicValid(t *testing.T) {
 			},
 			want: true,
 		},
+		{
+			name: "invalid checksum",
+			args: args{
+				mnemonic: "ivory disorder hawk slot oil promote north fat zebra useless device cargo",
+				lang:     English,
+			},
+			want: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

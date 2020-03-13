@@ -1,7 +1,9 @@
 package bip39
 
 import (
+	"bytes"
 	"encoding/hex"
+	"io"
 	"testing"
 )
 
@@ -9,13 +11,13 @@ func TestNewMnemonic(t *testing.T) {
 	type args struct {
 		wordsLen int
 		lang     Language
-		skip     bool
 	}
 	tests := []struct {
 		name    string
 		args    args
 		want    string
 		wantErr bool
+		rander  io.Reader
 	}{
 		{
 			name:    "words length less than 12",
@@ -36,20 +38,34 @@ func TestNewMnemonic(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			name:    "words length is ok",
-			args:    args{wordsLen: 12, skip: true},
+			name:    "invalid random reader",
+			args:    args{wordsLen: 12},
 			want:    "",
+			wantErr: true,
+			rander:  bytes.NewReader(nil),
+		},
+		{
+			name: "words length is ok",
+			args: args{wordsLen: 12, lang: English},
+			want: "betray shoe olive vivid nurse concert wonder early image castle route avocado",
+			rander: bytes.NewBuffer([]byte{
+				21, 120, 206, 104, 250,
+				153, 120, 93, 127, 66,
+				41, 113, 68, 114, 242,
+				7,
+			}),
 			wantErr: false,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			cryptoRander = tt.rander
 			got, err := NewMnemonic(tt.args.wordsLen, tt.args.lang)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("NewMnemonic() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if got != tt.want && !tt.args.skip {
+			if got != tt.want {
 				t.Errorf("NewMnemonic() = %v, want %v", got, tt.want)
 			}
 		})

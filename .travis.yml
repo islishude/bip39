@@ -6,7 +6,6 @@ go:
   - "1.12"
   - "1.13"
   - "1.14"
-git:
-  depth: 1
 script:
-  - go test -v -cover .
+  - go test -race -coverprofile=coverage.txt -covermode=atomic
+  - bash <(curl -s https://codecov.io/bash)
