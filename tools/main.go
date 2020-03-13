@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"html/template"
 	"io/ioutil"
@@ -9,8 +8,6 @@ import (
 	"net/http"
 	"os"
 	"strings"
-
-	"golang.org/x/sync/errgroup"
 )
 
 const url = "https://raw.githubusercontent.com/bitcoin/bips/master/bip-0039/"
@@ -49,16 +46,10 @@ func main() {
 		log.Fatal(err)
 	}
 
-	eg, ctx := errgroup.WithContext(context.Background())
 	for path, name := range langs {
-		path, name := path, name
-		eg.Go(func() error {
-			select {
-			case <-ctx.Done():
-				return ctx.Err()
-			default:
-			}
-			resp, err := http.Get(url + path + ".txt")
+		err := func() error {
+			log.Printf("Getting %s's wordlist\n", name)
+			resp, err := http.Get(fmt.Sprintf("%s%s.txt", url, path))
 			if err != nil {
 				return err
 			}
@@ -76,13 +67,14 @@ func main() {
 			}
 			defer wfile.Close()
 
+			log.Printf("Writing %s's world list\n", name)
 			data := Data{Array: strings.Split(string(src), "\n"), Name: name}
 			return filetpl.Execute(wfile, data)
-		})
-	}
+		}()
 
-	if err := eg.Wait(); err != nil {
-		log.Fatal(err)
+		if err != nil {
+			log.Fatalln(err)
+		}
 	}
 
 	log.Println("Update successful!")

@@ -34,6 +34,15 @@ func Test_fromEntropy(t *testing.T) {
 			},
 			want: "bar ketchup carpet can fitness canyon useful poverty stuff vintage mansion all",
 		},
+		{
+			name: "japanese",
+			args: args{
+				entropy: "823be3d84e6ce7494001d42949f9ce391fe45616",
+				wordLen: 15,
+				lg:      Japanese,
+			},
+			want: "そらまめ　ほとんど　らくがき　ていか　ひみつ　てんらんかい　あいこくしん　くうふく　かいほう　こさめ　せいかつ　すめし　ろれつ　かたい　さつえい",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

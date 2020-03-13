@@ -67,3 +67,31 @@ func TestLanguage_List(t *testing.T) {
 		})
 	}
 }
+
+func TestLanguage_mapping(t *testing.T) {
+	tests := []struct {
+		name string
+		lan  Language
+		want map[string]int64
+	}{
+		{"ChineseSimplified", ChineseSimplified, chineseSimplifiedMapping},
+		{"ChineseTraditional", ChineseTraditional, chineseTraditionalMapping},
+		{"English", English, englishMapping},
+		{"Italian", Italian, italianMapping},
+		{"Japanese", Japanese, japaneseMapping},
+		{"Spanish", Spanish, spanishMapping},
+		{"Korean", Korean, koreanMapping},
+		{
+			name: "Unknown",
+			lan:  100,
+			want: nil,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.lan.mapping(); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Language.mapping() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

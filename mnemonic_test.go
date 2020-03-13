@@ -45,6 +45,14 @@ func TestIsMnemonicValid(t *testing.T) {
 			want: false,
 		},
 		{
+			name: "English with invalid word",
+			args: args{
+				mnemonic: "bip39 english mnemonic test case bip39 english mnemonic test case bip39 english mnemonic test case",
+				lang:     English,
+			},
+			want: false,
+		},
+		{
 			name: "EnglishChecksumError",
 			args: args{
 				mnemonic: "rich soon pool legal busy add couch tower goose security base",
