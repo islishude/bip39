@@ -1,5 +1,6 @@
 update-worldlist:
-	go run tools/main.go
-	goimports -w .
-test:
-	go test .
+	@go run tools/main.go
+	@goimports -w .
+
+unit-test:
+	go test -cover .

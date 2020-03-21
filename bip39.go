@@ -10,10 +10,10 @@ import (
 	"golang.org/x/text/unicode/norm"
 )
 
-// cryptoRander is test stub
+// cryptoRander is a test stub for NewMnemonic func
 var cryptoRander = rand.Reader
 
-// NewMnemonicByEntropy generates new mnemonic by entropy provided
+// NewMnemonicByEntropy create new mnemonic by entropy provided
 func NewMnemonicByEntropy(entropy []byte, lang Language) (string, error) {
 	entLen := len(entropy)
 	// 128 <= ENT <= 256
@@ -23,7 +23,7 @@ func NewMnemonicByEntropy(entropy []byte, lang Language) (string, error) {
 	return fromEntropy(entropy, entLen/4*3, lang), nil
 }
 
-// NewMnemonic generates new mnemonic by words length
+// NewMnemonic creates new mnemonic by words length for language provided
 func NewMnemonic(length int, lang Language) (string, error) {
 	// word length should be 12 | 15 | 18 | 21 | 24
 	if length < 12 || length > 24 || length%3 != 0 {
@@ -50,10 +50,10 @@ func NewMnemonic(length int, lang Language) (string, error) {
 	return fromEntropy(entropy, length, lang), nil
 }
 
-// MnemonicToSeed creates seed by
-// param passwd can be empty string
-func MnemonicToSeed(mnemonic string, passwd string) []byte {
+// MnemonicToSeed creates 64 bytes seed by pbkdf
+// passphrace is optional,it can be empty string
+func MnemonicToSeed(mnemonic, passphrase string) []byte {
 	password := []byte(norm.NFKD.String(mnemonic))
-	salt := []byte(norm.NFKD.String("mnemonic" + passwd))
+	salt := []byte(norm.NFKD.String("mnemonic" + passphrase))
 	return pbkdf2.Key(password, salt, 2048, 64, sha512.New)
 }

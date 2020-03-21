@@ -51,7 +51,7 @@ func CheckMnemonic(mnemonic string, lg Language) error {
 	sum := new(big.Int).SetBytes(hash.Sum(nil)[0:1])
 	sum.Quo(sum, big.NewInt(1<<(8-uint(wordCount/3))))
 
-	// compare
+	// compare checksum
 	if sum.Cmp(csBig) != 0 {
 		return ErrChecksumIncorrect
 	}
