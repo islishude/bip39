@@ -2,6 +2,7 @@ package bip39
 
 import (
 	"bytes"
+	"crypto/rand"
 	"encoding/hex"
 	"io"
 	"testing"
@@ -20,22 +21,25 @@ func TestNewMnemonic(t *testing.T) {
 		rander  io.Reader
 	}{
 		{
-			name:    "words length less than 12",
+			name:    "invalid words length",
 			args:    args{wordsLen: 1},
 			want:    "",
 			wantErr: true,
+			rander:  rand.Reader,
 		},
 		{
 			name:    "words length greater than 24",
 			args:    args{wordsLen: 25},
 			want:    "",
 			wantErr: true,
+			rander:  rand.Reader,
 		},
 		{
 			name:    "words length isn't multiple of 3",
 			args:    args{wordsLen: 13},
 			want:    "",
 			wantErr: true,
+			rander:  rand.Reader,
 		},
 		{
 			name:    "invalid random reader",
