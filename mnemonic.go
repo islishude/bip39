@@ -47,7 +47,7 @@ func CheckMnemonic(mnemonic string, lg Language) error {
 	entBytes := entBig.Quo(entBig, big.NewInt(shift)).Bytes()
 	// get checksum from real entropy
 	hash := sha256.New()
-	hash.Write(entBytes)
+	_, _ = hash.Write(entBytes)
 	sum := new(big.Int).SetBytes(hash.Sum(nil)[0:1])
 	sum.Quo(sum, big.NewInt(1<<(8-uint(wordCount/3))))
 

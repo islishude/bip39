@@ -14,7 +14,7 @@ var first11BitsMask = big.NewInt(2048)
 func fromEntropy(entropy []byte, wordLen int, lg Language) string {
 	// entropy hash
 	hash := sha256.New()
-	hash.Write(entropy)
+	_, _ = hash.Write(entropy)
 	checksum := hash.Sum(nil)[0:1]
 
 	csInt := new(big.Int).SetBytes(checksum)

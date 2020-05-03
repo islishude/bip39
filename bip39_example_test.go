@@ -17,7 +17,7 @@ func ExampleMnemonicToSeed() {
 
 func ExampleNewMnemonic() {
 	// Words length can be 12 | 15 | 18 | 21 | 24
-	NewMnemonic(12, English)
+	_, _ = NewMnemonic(12, English)
 }
 
 func ExampleIsMnemonicValid() {
