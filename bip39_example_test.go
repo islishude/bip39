@@ -15,15 +15,9 @@ func ExampleMnemonicToSeed() {
 	// 84+1qMowq+jNijVCiRHXJ32RJevC8Bml1ADNdl0fb1alUvC5L4FJsNg09+W2SnFUiECrfUyCalh4NCnjZrIcrw==
 }
 
-func ExampleNewMnemonic() {
-	// Words length can be 12 | 15 | 18 | 21 | 24
-	_, _ = NewMnemonic(12, English)
-}
-
 func ExampleIsMnemonicValid() {
-	var mnemonic = "check fiscal fit sword unlock rough lottery tool sting pluck bulb random"
-	res := IsMnemonicValid(mnemonic, English)
-	fmt.Println(res)
+	const mnemonic = "check fiscal fit sword unlock rough lottery tool sting pluck bulb random"
+	fmt.Println(IsMnemonicValid(mnemonic, English))
 
 	// Output:
 	// true
