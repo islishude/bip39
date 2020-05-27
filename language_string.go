@@ -4,21 +4,6 @@ package bip39
 
 import "strconv"
 
-func _() {
-	// An "invalid array index" compiler error signifies that the constant values have changed.
-	// Re-run the stringer command to generate them again.
-	var x [1]struct{}
-	_ = x[ChineseSimplified-0]
-	_ = x[ChineseTraditional-1]
-	_ = x[English-2]
-	_ = x[French-3]
-	_ = x[Italian-4]
-	_ = x[Japanese-5]
-	_ = x[Korean-6]
-	_ = x[Spanish-7]
-	_ = x[Czech-8]
-}
-
 const _Language_name = "ChineseSimplifiedChineseTraditionalEnglishFrenchItalianJapaneseKoreanSpanishCzech"
 
 var _Language_index = [...]uint8{0, 17, 35, 42, 48, 55, 63, 69, 76, 81}
