@@ -82,26 +82,26 @@ func TestLanguage_mapping(t *testing.T) {
 	tests := []struct {
 		name string
 		lan  Language
-		want map[string]int64
+		want *map[string]int64
 	}{
-		{"ChineseSimplified", ChineseSimplified, chineseSimplifiedMapping},
-		{"ChineseTraditional", ChineseTraditional, chineseTraditionalMapping},
-		{"English", English, englishMapping},
-		{"Italian", Italian, italianMapping},
-		{"Japanese", Japanese, japaneseMapping},
-		{"Spanish", Spanish, spanishMapping},
-		{"Korean", Korean, koreanMapping},
-		{"Czech", Czech, czechMapping},
-		{"Portuguese", Portuguese, portugueseMapping},
+		{"ChineseSimplified", ChineseSimplified, &chineseSimplifiedMapping},
+		{"ChineseTraditional", ChineseTraditional, &chineseTraditionalMapping},
+		{"English", English, &englishMapping},
+		{"Italian", Italian, &italianMapping},
+		{"Japanese", Japanese, &japaneseMapping},
+		{"Spanish", Spanish, &spanishMapping},
+		{"Korean", Korean, &koreanMapping},
+		{"Czech", Czech, &czechMapping},
+		{"Portuguese", Portuguese, &portugueseMapping},
 		{"Unknown", 100, nil},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := tt.lan.mapping()
-			if !reflect.DeepEqual(got, tt.want) {
+			if tt.name != "Unknown" && !reflect.DeepEqual(got, *tt.want) {
 				t.Errorf("Language.mapping() = %v, want %v", got, tt.want)
 			}
-			if got != nil && len(got) != 2048 {
+			if tt.name != "Unknown" && len(got) != 2048 {
 				t.Errorf("Language.mapping() wants 2048 elements but got %d", len(got))
 			}
 		})

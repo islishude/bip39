@@ -68,16 +68,16 @@ var (
 
 // Words Mapping
 var (
-	chineseSimplifiedMapping  = make(map[string]int64)
-	chineseTraditionalMapping = make(map[string]int64)
-	englishMapping            = make(map[string]int64)
-	frenchMapping             = make(map[string]int64)
-	italianMapping            = make(map[string]int64)
-	japaneseMapping           = make(map[string]int64)
-	koreanMapping             = make(map[string]int64)
-	spanishMapping            = make(map[string]int64)
-	czechMapping              = make(map[string]int64)
-	portugueseMapping         = make(map[string]int64)
+	chineseSimplifiedMapping  map[string]int64
+	chineseTraditionalMapping map[string]int64
+	englishMapping            map[string]int64
+	frenchMapping             map[string]int64
+	italianMapping            map[string]int64
+	japaneseMapping           map[string]int64
+	koreanMapping             map[string]int64
+	spanishMapping            map[string]int64
+	czechMapping              map[string]int64
+	portugueseMapping         map[string]int64
 )
 
 // mapping returns word index mapping
@@ -85,6 +85,7 @@ func (lan Language) mapping() map[string]int64 {
 	switch lan {
 	case ChineseSimplified:
 		chineseSimplifiedOnce.Do(func() {
+			chineseSimplifiedMapping = make(map[string]int64, 2048)
 			for idx, word := range wordlist.ChineseSimplified {
 				chineseSimplifiedMapping[word] = int64(idx)
 			}
@@ -92,6 +93,7 @@ func (lan Language) mapping() map[string]int64 {
 		return chineseSimplifiedMapping
 	case ChineseTraditional:
 		chineseTraditionalOnce.Do(func() {
+			chineseTraditionalMapping = make(map[string]int64, 2048)
 			for idx, word := range wordlist.ChineseTraditional {
 				chineseTraditionalMapping[word] = int64(idx)
 			}
@@ -99,6 +101,7 @@ func (lan Language) mapping() map[string]int64 {
 		return chineseTraditionalMapping
 	case English:
 		englishOnce.Do(func() {
+			englishMapping = make(map[string]int64, 2048)
 			for idx, word := range wordlist.English {
 				englishMapping[word] = int64(idx)
 			}
@@ -106,6 +109,7 @@ func (lan Language) mapping() map[string]int64 {
 		return englishMapping
 	case French:
 		frenchOnce.Do(func() {
+			frenchMapping = make(map[string]int64, 2048)
 			for idx, word := range wordlist.French {
 				frenchMapping[word] = int64(idx)
 			}
@@ -113,6 +117,7 @@ func (lan Language) mapping() map[string]int64 {
 		return frenchMapping
 	case Italian:
 		italianOnce.Do(func() {
+			italianMapping = make(map[string]int64, 2048)
 			for idx, word := range wordlist.Italian {
 				italianMapping[word] = int64(idx)
 			}
@@ -120,6 +125,7 @@ func (lan Language) mapping() map[string]int64 {
 		return italianMapping
 	case Japanese:
 		japaneseOnce.Do(func() {
+			japaneseMapping = make(map[string]int64, 2048)
 			for idx, word := range wordlist.Japanese {
 				japaneseMapping[word] = int64(idx)
 			}
@@ -127,6 +133,7 @@ func (lan Language) mapping() map[string]int64 {
 		return japaneseMapping
 	case Spanish:
 		spanishOnce.Do(func() {
+			spanishMapping = make(map[string]int64, 2048)
 			for idx, word := range wordlist.Spanish {
 				spanishMapping[word] = int64(idx)
 			}
@@ -134,6 +141,7 @@ func (lan Language) mapping() map[string]int64 {
 		return spanishMapping
 	case Korean:
 		koreanOnce.Do(func() {
+			koreanMapping = make(map[string]int64, 2048)
 			for idx, word := range wordlist.Korean {
 				koreanMapping[word] = int64(idx)
 			}
@@ -141,6 +149,7 @@ func (lan Language) mapping() map[string]int64 {
 		return koreanMapping
 	case Czech:
 		czechOnce.Do(func() {
+			czechMapping = make(map[string]int64, 2048)
 			for idx, word := range wordlist.Czech {
 				czechMapping[word] = int64(idx)
 			}
@@ -148,6 +157,7 @@ func (lan Language) mapping() map[string]int64 {
 		return czechMapping
 	case Portuguese:
 		portugueseOnce.Do(func() {
+			portugueseMapping = make(map[string]int64, 2048)
 			for idx, word := range wordlist.Portuguese {
 				portugueseMapping[word] = int64(idx)
 			}
