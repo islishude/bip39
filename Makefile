@@ -1,7 +1,7 @@
 .PHONY: update-wordlist
 update-wordlist:
-	@mkdir -p wordlist
-	@go run github.com/islishude/bip39/update-wordlist
+	@mkdir -p internal/wordlist
+	@go run ./update-wordlist/main.go
 	@goimports -w .
 
 .PHONY: unit-test
