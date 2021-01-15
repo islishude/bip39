@@ -3,7 +3,7 @@ package bip39
 import (
 	"sync"
 
-	"github.com/islishude/bip39/wordlist"
+	"github.com/islishude/bip39/internal/wordlist"
 )
 
 //go:generate stringer -type=Language
@@ -22,6 +22,7 @@ const (
 	Korean
 	Spanish
 	Czech
+	Portuguese
 )
 
 // list gets word list
@@ -45,6 +46,8 @@ func (lan Language) list() []string {
 		return wordlist.Korean
 	case Czech:
 		return wordlist.Czech
+	case Portuguese:
+		return wordlist.Portuguese
 	default:
 		return wordlist.English
 	}
@@ -60,6 +63,7 @@ var (
 	koreanOnce             sync.Once
 	spanishOnce            sync.Once
 	czechOnce              sync.Once
+	portugueseOnce         sync.Once
 )
 
 // Words Mapping
@@ -73,6 +77,7 @@ var (
 	koreanMapping             = make(map[string]int64)
 	spanishMapping            = make(map[string]int64)
 	czechMapping              = make(map[string]int64)
+	portugueseMapping         = make(map[string]int64)
 )
 
 // mapping returns word index mapping
@@ -141,6 +146,13 @@ func (lan Language) mapping() map[string]int64 {
 			}
 		})
 		return czechMapping
+	case Portuguese:
+		portugueseOnce.Do(func() {
+			for idx, word := range wordlist.Portuguese {
+				portugueseMapping[word] = int64(idx)
+			}
+		})
+		return portugueseMapping
 	}
 	return nil
 }

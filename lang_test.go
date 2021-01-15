@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/islishude/bip39/wordlist"
+	"github.com/islishude/bip39/internal/wordlist"
 )
 
 func TestLanguage_List(t *testing.T) {
@@ -59,6 +59,11 @@ func TestLanguage_List(t *testing.T) {
 			want: wordlist.Czech,
 		},
 		{
+			name: "Portuguese",
+			lan:  Portuguese,
+			want: wordlist.Portuguese,
+		},
+		{
 			name: "Unsupports",
 			lan:  100,
 			want: wordlist.English,
@@ -87,6 +92,7 @@ func TestLanguage_mapping(t *testing.T) {
 		{"Spanish", Spanish, spanishMapping},
 		{"Korean", Korean, koreanMapping},
 		{"Czech", Czech, czechMapping},
+		{"Portuguese", Portuguese, portugueseMapping},
 		{"Unknown", 100, nil},
 	}
 	for _, tt := range tests {
