@@ -16,6 +16,10 @@ func IsMnemonicValid(m string, lg Language) bool {
 
 // CheckMnemonic creates entropy from mnemonic
 func CheckMnemonic(mnemonic string, lg Language) error {
+	if !lg.Valid() {
+		return ErrInvalidLanguage
+	}
+
 	mnemonic = norm.NFKD.String(mnemonic)
 	wordList := strings.Split(mnemonic, "\x20")
 
@@ -39,17 +43,20 @@ func CheckMnemonic(mnemonic string, lg Language) error {
 		entBig.Add(entBig, partBig)
 	}
 
-	var shift int64 = 1 << uint(wordCount/3)
+	csBitLen := uint(wordCount / 3)
+	var shift int64 = 1 << csBitLen
 	// get checksum
 	csBig := new(big.Int).And(entBig, big.NewInt(shift-1))
 
 	// get real entropy
-	entBytes := entBig.Quo(entBig, big.NewInt(shift)).Bytes()
+	entByteLen := wordCount / 3 * 4
+	entBytes := make([]byte, entByteLen)
+	entBig.Quo(entBig, big.NewInt(shift)).FillBytes(entBytes)
 	// get checksum from real entropy
 	hash := sha256.New()
 	_, _ = hash.Write(entBytes)
 	sum := new(big.Int).SetBytes(hash.Sum(nil)[0:1])
-	sum.Quo(sum, big.NewInt(1<<(8-uint(wordCount/3))))
+	sum.Quo(sum, big.NewInt(1<<(8-csBitLen)))
 
 	// compare checksum
 	if sum.Cmp(csBig) != 0 {

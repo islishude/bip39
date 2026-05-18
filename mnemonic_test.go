@@ -1,6 +1,10 @@
 package bip39
 
-import "testing"
+import (
+	"errors"
+	"math"
+	"testing"
+)
 
 func TestIsMnemonicValid(t *testing.T) {
 	type args struct {
@@ -27,6 +31,22 @@ func TestIsMnemonicValid(t *testing.T) {
 				lang:     English,
 			},
 			want: true,
+		},
+		{
+			name: "English official zero entropy vector",
+			args: args{
+				mnemonic: "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about",
+				lang:     English,
+			},
+			want: true,
+		},
+		{
+			name: "English leading zero entropy wrong checksum",
+			args: args{
+				mnemonic: "abandon amount liar amount expire adjust cage candy arch gather drum bunker",
+				lang:     English,
+			},
+			want: false,
 		},
 		{
 			name: "EnglishValidLength",
@@ -131,5 +151,13 @@ func TestIsMnemonicValid(t *testing.T) {
 				t.Errorf("IsMnemonicValid() = %v, want %v", got, tt.want)
 			}
 		})
+	}
+}
+
+func TestCheckMnemonicInvalidLanguage(t *testing.T) {
+	const mnemonic = "check fiscal fit sword unlock rough lottery tool sting pluck bulb random"
+
+	if err := CheckMnemonic(mnemonic, Language(math.MaxInt)); !errors.Is(err, ErrInvalidLanguage) {
+		t.Fatalf("CheckMnemonic() error = %v, want %v", err, ErrInvalidLanguage)
 	}
 }

@@ -217,6 +217,10 @@ func TestMnemonicVector(t *testing.T) {
 					t.Errorf("NewMnemonicByEntropy() = %v, want %v", mnemonic, vector[1])
 					return
 				}
+				if err := CheckMnemonic(vector[1], lang); err != nil {
+					t.Errorf("CheckMnemonic() error = %v", err)
+					return
+				}
 				seed := MnemonicToSeed(mnemonic, "TREZOR")
 				if hex.EncodeToString(seed) != vector[2] {
 					t.Errorf("MnemonicToSeed() = %v, want %v", seed, vector[2])
