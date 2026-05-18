@@ -2,6 +2,7 @@ package bip39
 
 import (
 	"iter"
+	"strings"
 	"sync"
 
 	"github.com/islishude/bip39/internal/wordlist"
@@ -16,9 +17,9 @@ type Language int
 
 // Language list
 const (
-	ChineseSimplified Language = iota
+	English Language = iota
+	ChineseSimplified
 	ChineseTraditional
-	English
 	French
 	Italian
 	Japanese
@@ -26,7 +27,52 @@ const (
 	Spanish
 	Czech
 	Portuguese
+	Deutsch
+	Esperanto
+	Greek
+	Hindi
+	Latin
+	Russian
 )
+
+func LanguageByName(lang string) (Language, bool) {
+	switch strings.ToLower(lang) {
+	case "english":
+		return English, true
+	case "chinese_simplified":
+		return ChineseSimplified, true
+	case "chinese_traditional":
+		return ChineseTraditional, true
+	case "french":
+		return French, true
+	case "italian":
+		return Italian, true
+	case "japanese":
+		return Japanese, true
+	case "korean":
+		return Korean, true
+	case "spanish":
+		return Spanish, true
+	case "czech":
+		return Czech, true
+	case "portuguese":
+		return Portuguese, true
+	case "deutsch":
+		return Deutsch, true
+	case "esperanto":
+		return Esperanto, true
+	case "greek":
+		return Greek, true
+	case "hindi":
+		return Hindi, true
+	case "latin":
+		return Latin, true
+	case "russian":
+		return Russian, true
+	default:
+		return 0, false
+	}
+}
 
 // list gets word list
 func (lan Language) list(copy bool) (res []string) {
@@ -84,17 +130,47 @@ func (lan Language) list(copy bool) (res []string) {
 			return append(res, wordlist.Portuguese...)
 		}
 		return wordlist.Portuguese
-	default:
+	case Deutsch:
 		if copy {
-			return append(res, wordlist.English...)
+			return append(res, wordlist.Deutsch...)
 		}
-		return wordlist.English
+		return wordlist.Deutsch
+	case Esperanto:
+		if copy {
+			return append(res, wordlist.Esperanto...)
+		}
+		return wordlist.Esperanto
+	case Greek:
+		if copy {
+			return append(res, wordlist.Greek...)
+		}
+		return wordlist.Greek
+	case Hindi:
+		if copy {
+			return append(res, wordlist.Hindi...)
+		}
+		return wordlist.Hindi
+	case Latin:
+		if copy {
+			return append(res, wordlist.Latin...)
+		}
+		return wordlist.Latin
+	case Russian:
+		if copy {
+			return append(res, wordlist.Russian...)
+		}
+		return wordlist.Russian
 	}
+	return nil
 }
 
 // Words gets word list
 func (lan Language) Words() []string {
 	return lan.list(true)
+}
+
+func (lan Language) Valid() bool {
+	return lan >= English && lan <= Russian
 }
 
 func (lan Language) Iter() iter.Seq2[int, string] {
@@ -110,7 +186,6 @@ func (lan Language) Iter() iter.Seq2[int, string] {
 var (
 	chineseSimplifiedOnce  sync.Once
 	chineseTraditionalOnce sync.Once
-	englishOnce            sync.Once
 	frenchOnce             sync.Once
 	italianOnce            sync.Once
 	japaneseOnce           sync.Once
@@ -118,6 +193,12 @@ var (
 	spanishOnce            sync.Once
 	czechOnce              sync.Once
 	portugueseOnce         sync.Once
+	deutschOnce            sync.Once
+	esperantoOnce          sync.Once
+	greekOnce              sync.Once
+	hindiOnce              sync.Once
+	latinOnce              sync.Once
+	russianOnce            sync.Once
 )
 
 // Words Mapping
@@ -132,11 +213,26 @@ var (
 	spanishMapping            map[string]int64
 	czechMapping              map[string]int64
 	portugueseMapping         map[string]int64
+	deutschMapping            map[string]int64
+	esperantoMapping          map[string]int64
+	greekMapping              map[string]int64
+	hindiMapping              map[string]int64
+	latinMapping              map[string]int64
+	russianMapping            map[string]int64
 )
+
+func init() {
+	englishMapping = make(map[string]int64, mnemonicWordCount)
+	for idx, word := range wordlist.English {
+		englishMapping[word] = int64(idx)
+	}
+}
 
 // mapping returns word index mapping
 func (lan Language) mapping() map[string]int64 {
 	switch lan {
+	case English:
+		return englishMapping
 	case ChineseSimplified:
 		chineseSimplifiedOnce.Do(func() {
 			chineseSimplifiedMapping = make(map[string]int64, mnemonicWordCount)
@@ -153,14 +249,6 @@ func (lan Language) mapping() map[string]int64 {
 			}
 		})
 		return chineseTraditionalMapping
-	case English:
-		englishOnce.Do(func() {
-			englishMapping = make(map[string]int64, mnemonicWordCount)
-			for idx, word := range wordlist.English {
-				englishMapping[word] = int64(idx)
-			}
-		})
-		return englishMapping
 	case French:
 		frenchOnce.Do(func() {
 			frenchMapping = make(map[string]int64, mnemonicWordCount)
@@ -217,6 +305,54 @@ func (lan Language) mapping() map[string]int64 {
 			}
 		})
 		return portugueseMapping
+	case Deutsch:
+		deutschOnce.Do(func() {
+			deutschMapping = make(map[string]int64, mnemonicWordCount)
+			for idx, word := range wordlist.Deutsch {
+				deutschMapping[word] = int64(idx)
+			}
+		})
+		return deutschMapping
+	case Esperanto:
+		esperantoOnce.Do(func() {
+			esperantoMapping = make(map[string]int64, mnemonicWordCount)
+			for idx, word := range wordlist.Esperanto {
+				esperantoMapping[word] = int64(idx)
+			}
+		})
+		return esperantoMapping
+	case Greek:
+		greekOnce.Do(func() {
+			greekMapping = make(map[string]int64, mnemonicWordCount)
+			for idx, word := range wordlist.Greek {
+				greekMapping[word] = int64(idx)
+			}
+		})
+		return greekMapping
+	case Hindi:
+		hindiOnce.Do(func() {
+			hindiMapping = make(map[string]int64, mnemonicWordCount)
+			for idx, word := range wordlist.Hindi {
+				hindiMapping[word] = int64(idx)
+			}
+		})
+		return hindiMapping
+	case Latin:
+		latinOnce.Do(func() {
+			latinMapping = make(map[string]int64, mnemonicWordCount)
+			for idx, word := range wordlist.Latin {
+				latinMapping[word] = int64(idx)
+			}
+		})
+		return latinMapping
+	case Russian:
+		russianOnce.Do(func() {
+			russianMapping = make(map[string]int64, mnemonicWordCount)
+			for idx, word := range wordlist.Russian {
+				russianMapping[word] = int64(idx)
+			}
+		})
+		return russianMapping
 	}
 	return nil
 }

@@ -15,6 +15,10 @@ var cryptoRander = rand.Reader
 
 // NewMnemonicByEntropy create new mnemonic by entropy provided
 func NewMnemonicByEntropy(entropy []byte, lang Language) (string, error) {
+	if !lang.Valid() {
+		return "", ErrInvalidLanguage
+	}
+
 	entLen := len(entropy)
 	// 128 <= ENT <= 256
 	if entLen < 16 || entLen > 32 || entLen%4 != 0 {
@@ -25,6 +29,10 @@ func NewMnemonicByEntropy(entropy []byte, lang Language) (string, error) {
 
 // NewMnemonic creates new mnemonic by words length for language provided
 func NewMnemonic(length int, lang Language) (string, error) {
+	if !lang.Valid() {
+		return "", ErrInvalidLanguage
+	}
+
 	// word length should be 12 | 15 | 18 | 21 | 24
 	if length < 12 || length > 24 || length%3 != 0 {
 		return "", ErrWordLen

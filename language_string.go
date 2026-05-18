@@ -4,13 +4,36 @@ package bip39
 
 import "strconv"
 
-const _Language_name = "ChineseSimplifiedChineseTraditionalEnglishFrenchItalianJapaneseKoreanSpanishCzech"
+func _() {
+	// An "invalid array index" compiler error signifies that the constant values have changed.
+	// Re-run the stringer command to generate them again.
+	var x [1]struct{}
+	_ = x[English-0]
+	_ = x[ChineseSimplified-1]
+	_ = x[ChineseTraditional-2]
+	_ = x[French-3]
+	_ = x[Italian-4]
+	_ = x[Japanese-5]
+	_ = x[Korean-6]
+	_ = x[Spanish-7]
+	_ = x[Czech-8]
+	_ = x[Portuguese-9]
+	_ = x[Deutsch-10]
+	_ = x[Esperanto-11]
+	_ = x[Greek-12]
+	_ = x[Hindi-13]
+	_ = x[Latin-14]
+	_ = x[Russian-15]
+}
 
-var _Language_index = [...]uint8{0, 17, 35, 42, 48, 55, 63, 69, 76, 81}
+const _Language_name = "EnglishChineseSimplifiedChineseTraditionalFrenchItalianJapaneseKoreanSpanishCzechPortugueseDeutschEsperantoGreekHindiLatinRussian"
+
+var _Language_index = [...]uint8{0, 7, 24, 42, 48, 55, 63, 69, 76, 81, 91, 98, 107, 112, 117, 122, 129}
 
 func (i Language) String() string {
-	if i >= Language(len(_Language_index)-1) {
+	idx := int(i) - 0
+	if i < 0 || idx >= len(_Language_index)-1 {
 		return "Language(" + strconv.FormatInt(int64(i), 10) + ")"
 	}
-	return _Language_name[_Language_index[i]:_Language_index[i+1]]
+	return _Language_name[_Language_index[idx]:_Language_index[idx+1]]
 }

@@ -1,13 +1,4 @@
-.PHONY: update-wordlist
-update-wordlist:
-	@mkdir -p internal/wordlist
-	@go run ./update-wordlist/main.go
-	@gofmt -w internal/wordlist
-
-.PHONY: unit-test
-unit-test:
-	@go test -cover .
-
+.PHONY: update-wordlist pre-commit
 pre-commit:
 	@go build ./...
 	@go vet ./...
@@ -15,3 +6,8 @@ pre-commit:
 	@go fmt ./...
 	@go fix ./...
 	@go test -race -cover .
+
+update-wordlist:
+	@mkdir -p internal/wordlist
+	@go run ./update-wordlist/main.go
+	@gofmt -w internal/wordlist

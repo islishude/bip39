@@ -4,7 +4,11 @@ import (
 	"bytes"
 	"crypto/rand"
 	"encoding/hex"
+	"encoding/json"
+	"fmt"
 	"io"
+	"math"
+	"os"
 	"testing"
 )
 
@@ -59,6 +63,13 @@ func TestNewMnemonic(t *testing.T) {
 				7,
 			}),
 			wantErr: false,
+		},
+		{
+			name:    "invalid language",
+			args:    args{wordsLen: 12, lang: math.MaxInt},
+			want:    "",
+			rander:  rand.Reader,
+			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
@@ -169,5 +180,48 @@ func TestMnemonicToSeed(t *testing.T) {
 				t.Errorf("MnemonicToSeed() = %v, want %v", got, tt.want)
 			}
 		})
+	}
+}
+
+func TestMnemonicVector(t *testing.T) {
+	data, err := os.ReadFile("testdata/vector.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var testdata map[string][][]string
+	if err := json.Unmarshal(data, &testdata); err != nil {
+		t.Fatal(err)
+	}
+	for lg, vectors := range testdata {
+		for i, vector := range vectors {
+			t.Run(fmt.Sprintf("%s-%d", lg, i), func(t *testing.T) {
+				if len(vector) != 4 {
+					t.Errorf("invalid test vector length")
+					return
+				}
+				entropy, err := hex.DecodeString(vector[0])
+				if err != nil {
+					t.Fatal(err)
+				}
+				lang, ok := LanguageByName(lg)
+				if !ok {
+					t.Skip("unsupport language", lg)
+					return
+				}
+				mnemonic, err := NewMnemonicByEntropy(entropy, lang)
+				if err != nil {
+					t.Error(err)
+					return
+				}
+				if mnemonic != vector[1] {
+					t.Errorf("NewMnemonicByEntropy() = %v, want %v", mnemonic, vector[1])
+					return
+				}
+				seed := MnemonicToSeed(mnemonic, "TREZOR")
+				if hex.EncodeToString(seed) != vector[2] {
+					t.Errorf("MnemonicToSeed() = %v, want %v", seed, vector[2])
+				}
+			})
+		}
 	}
 }

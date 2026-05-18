@@ -65,14 +65,49 @@ func TestLanguage_List(t *testing.T) {
 			want: wordlist.Portuguese,
 		},
 		{
+			name: "Deutsch",
+			lan:  Deutsch,
+			want: wordlist.Deutsch,
+		},
+		{
+			name: "Esperanto",
+			lan:  Esperanto,
+			want: wordlist.Esperanto,
+		},
+		{
+			name: "Greek",
+			lan:  Greek,
+			want: wordlist.Greek,
+		},
+		{
+			name: "Hindi",
+			lan:  Hindi,
+			want: wordlist.Hindi,
+		},
+		{
+			name: "Latin",
+			lan:  Latin,
+			want: wordlist.Latin,
+		},
+		{
+			name: "Russian",
+			lan:  Russian,
+			want: wordlist.Russian,
+		},
+		{
 			name: "Unsupports",
-			lan:  100,
-			want: wordlist.English,
+			lan:  math.MaxInt,
+			want: nil,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.lan.list(false); !reflect.DeepEqual(got, tt.want) || len(got) != mnemonicWordCount {
+			got := tt.lan.list(false)
+			if len(tt.want) == 0 && len(got) != 0 {
+				t.Errorf("Language.List() = nil, want %v", tt.want)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Language.List() = %v, want %v", got, tt.want)
 			}
 		})
@@ -94,7 +129,13 @@ func TestLanguage_mapping(t *testing.T) {
 		{"Korean", Korean, &koreanMapping},
 		{"Czech", Czech, &czechMapping},
 		{"Portuguese", Portuguese, &portugueseMapping},
-		{"Unknown", 100, nil},
+		{"Deutsch", Deutsch, &deutschMapping},
+		{"Esperanto", Esperanto, &esperantoMapping},
+		{"Greek", Greek, &greekMapping},
+		{"Hindi", Hindi, &hindiMapping},
+		{"Latin", Latin, &latinMapping},
+		{"Russian", Russian, &russianMapping},
+		{"Unknown", math.MaxInt, nil},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -120,12 +161,29 @@ func TestLanguage_Iter(t *testing.T) {
 }
 
 func TestLanguage_Words(t *testing.T) {
-	for _, lan := range []Language{ChineseSimplified, ChineseTraditional, English, French, Italian, Japanese, Korean, Spanish, Czech, Portuguese, math.MaxInt} {
+	for _, lan := range []Language{
+		ChineseSimplified,
+		ChineseTraditional,
+		English,
+		French,
+		Italian,
+		Japanese,
+		Korean,
+		Spanish,
+		Czech,
+		Portuguese,
+		Deutsch,
+		Esperanto,
+		Greek,
+		Hindi,
+		Latin,
+		Russian,
+	} {
 		words := lan.Words()
 		if len(words) != mnemonicWordCount || cap(words) != mnemonicWordCount {
 			t.Errorf("Language.Words() wants %d elements but got %d", mnemonicWordCount, len(words))
 		}
-		if lan == English || lan == math.MaxInt {
+		if lan == English {
 			if !reflect.DeepEqual(words, wordlist.English) {
 				t.Errorf("Language.Words() = %v, want %v", words, wordlist.English)
 			}
