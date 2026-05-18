@@ -72,7 +72,7 @@ func TestLanguage_List(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.lan.list(false); !reflect.DeepEqual(got, tt.want) || len(got) != 2048 {
+			if got := tt.lan.list(false); !reflect.DeepEqual(got, tt.want) || len(got) != mnemonicWordCount {
 				t.Errorf("Language.List() = %v, want %v", got, tt.want)
 			}
 		})
@@ -102,8 +102,8 @@ func TestLanguage_mapping(t *testing.T) {
 			if tt.name != "Unknown" && !reflect.DeepEqual(got, *tt.want) {
 				t.Errorf("Language.mapping() = %v, want %v", got, tt.want)
 			}
-			if tt.name != "Unknown" && len(got) != 2048 {
-				t.Errorf("Language.mapping() wants 2048 elements but got %d", len(got))
+			if tt.name != "Unknown" && len(got) != mnemonicWordCount {
+				t.Errorf("Language.mapping() wants %d elements but got %d", mnemonicWordCount, len(got))
 			}
 		})
 	}
@@ -122,8 +122,8 @@ func TestLanguage_Iter(t *testing.T) {
 func TestLanguage_Words(t *testing.T) {
 	for _, lan := range []Language{ChineseSimplified, ChineseTraditional, English, French, Italian, Japanese, Korean, Spanish, Czech, Portuguese, math.MaxInt} {
 		words := lan.Words()
-		if len(words) != 2048 || cap(words) != 2048 {
-			t.Errorf("Language.Words() wants 2048 elements but got %d", len(words))
+		if len(words) != mnemonicWordCount || cap(words) != mnemonicWordCount {
+			t.Errorf("Language.Words() wants %d elements but got %d", mnemonicWordCount, len(words))
 		}
 		if lan == English || lan == math.MaxInt {
 			if !reflect.DeepEqual(words, wordlist.English) {
