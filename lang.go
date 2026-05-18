@@ -53,6 +53,13 @@ func (lan Language) list() []string {
 	}
 }
 
+// Iter iterates word list with index and word
+func (lan Language) Iter(f func(int, string)) {
+	for idx, word := range lan.list() {
+		f(idx, word)
+	}
+}
+
 var (
 	chineseSimplifiedOnce  sync.Once
 	chineseTraditionalOnce sync.Once
