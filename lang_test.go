@@ -1,6 +1,7 @@
 package bip39
 
 import (
+	"math"
 	"reflect"
 	"testing"
 
@@ -71,7 +72,7 @@ func TestLanguage_List(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.lan.list(); !reflect.DeepEqual(got, tt.want) || len(got) != 2048 {
+			if got := tt.lan.list(false); !reflect.DeepEqual(got, tt.want) || len(got) != 2048 {
 				t.Errorf("Language.List() = %v, want %v", got, tt.want)
 			}
 		})
@@ -105,5 +106,33 @@ func TestLanguage_mapping(t *testing.T) {
 				t.Errorf("Language.mapping() wants 2048 elements but got %d", len(got))
 			}
 		})
+	}
+}
+
+func TestLanguage_Iter(t *testing.T) {
+	const testMnemonic = "test test test test test test test test test test test "
+	for _, word := range wordlist.English {
+		tmp := testMnemonic + word
+		if IsMnemonicValid(tmp, English) {
+			break
+		}
+	}
+}
+
+func TestLanguage_Words(t *testing.T) {
+	for _, lan := range []Language{ChineseSimplified, ChineseTraditional, English, French, Italian, Japanese, Korean, Spanish, Czech, Portuguese, math.MaxInt} {
+		words := lan.Words()
+		if len(words) != 2048 || cap(words) != 2048 {
+			t.Errorf("Language.Words() wants 2048 elements but got %d", len(words))
+		}
+		if lan == English || lan == math.MaxInt {
+			if !reflect.DeepEqual(words, wordlist.English) {
+				t.Errorf("Language.Words() = %v, want %v", words, wordlist.English)
+			}
+			words[0] = "nonexistentword"
+			if wordlist.English[0] == words[0] {
+				t.Errorf("Language.Words() should return a copy of the word list, but it seems to be a reference to the original list")
+			}
+		}
 	}
 }

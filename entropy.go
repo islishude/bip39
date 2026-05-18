@@ -27,7 +27,7 @@ func fromEntropy(entropy []byte, wordLen int, lg Language) string {
 	entInt.Add(entInt, csInt)
 
 	wordList := make([]string, wordLen)
-	lgList := lg.list()
+	lgList := lg.list(false)
 	wordIdx := new(big.Int)
 	for i := wordLen - 1; i >= 0; i-- {
 		wordIdx.And(entInt, last11BitsMask)

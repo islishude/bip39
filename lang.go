@@ -1,6 +1,7 @@
 package bip39
 
 import (
+	"iter"
 	"sync"
 
 	"github.com/islishude/bip39/internal/wordlist"
@@ -26,37 +27,81 @@ const (
 )
 
 // list gets word list
-func (lan Language) list() []string {
+func (lan Language) list(copy bool) (res []string) {
+	if copy {
+		res = make([]string, 0, 2048)
+	}
 	switch lan {
 	case English:
+		if copy {
+			return append(res, wordlist.English...)
+		}
 		return wordlist.English
 	case ChineseSimplified:
+		if copy {
+			return append(res, wordlist.ChineseSimplified...)
+		}
 		return wordlist.ChineseSimplified
 	case ChineseTraditional:
+		if copy {
+			return append(res, wordlist.ChineseTraditional...)
+		}
 		return wordlist.ChineseTraditional
 	case French:
+		if copy {
+			return append(res, wordlist.French...)
+		}
 		return wordlist.French
 	case Italian:
+		if copy {
+			return append(res, wordlist.Italian...)
+		}
 		return wordlist.Italian
 	case Japanese:
+		if copy {
+			return append(res, wordlist.Japanese...)
+		}
 		return wordlist.Japanese
 	case Spanish:
+		if copy {
+			return append(res, wordlist.Spanish...)
+		}
 		return wordlist.Spanish
 	case Korean:
+		if copy {
+			return append(res, wordlist.Korean...)
+		}
 		return wordlist.Korean
 	case Czech:
+		if copy {
+			return append(res, wordlist.Czech...)
+		}
 		return wordlist.Czech
 	case Portuguese:
+		if copy {
+			return append(res, wordlist.Portuguese...)
+		}
 		return wordlist.Portuguese
 	default:
+		if copy {
+			return append(res, wordlist.English...)
+		}
 		return wordlist.English
 	}
 }
 
-// Iter iterates word list with index and word
-func (lan Language) Iter(f func(int, string)) {
-	for idx, word := range lan.list() {
-		f(idx, word)
+// Words gets word list
+func (lan Language) Words() []string {
+	return lan.list(true)
+}
+
+func (lan Language) Iter() iter.Seq2[int, string] {
+	return func(yield func(int, string) bool) {
+		for idx, word := range lan.list(false) {
+			if !yield(idx, word) {
+				break
+			}
+		}
 	}
 }
 
