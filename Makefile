@@ -2,7 +2,7 @@
 update-wordlist:
 	@mkdir -p internal/wordlist
 	@go run ./update-wordlist/main.go
-	@goimports -w .
+	@gofmt -w internal/wordlist
 
 .PHONY: unit-test
 unit-test:

@@ -1,13 +1,16 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"html/template"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"os"
+	"os/signal"
 	"strings"
+	"time"
 )
 
 const url = "https://raw.githubusercontent.com/bitcoin/bips/master/bip-0039/"
@@ -44,15 +47,28 @@ type Template struct {
 
 var filetpl = template.Must(template.New("data").Parse(text))
 
-func updateWordlist(path, variable string) error {
-	resp, err := http.Get(fmt.Sprintf("%s%s.txt", url, path))
+var client = &http.Client{}
+
+func updateWordlist(basectx context.Context, path, variable string) error {
+	ctx, cancel := context.WithTimeout(basectx, time.Second*10)
+	defer cancel()
+
+	reqs, err := http.NewRequestWithContext(ctx, http.MethodGet, fmt.Sprintf("%s%s.txt", url, path), nil)
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
 
-	src, err := ioutil.ReadAll(resp.Body)
+	resp, err := client.Do(reqs)
 	if err != nil {
+		return err
+	}
+
+	src, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+
+	if err := resp.Body.Close(); err != nil {
 		return err
 	}
 
@@ -61,19 +77,23 @@ func updateWordlist(path, variable string) error {
 	if err != nil {
 		return err
 	}
-	defer wfile.Close()
 
 	data := Template{WordList: strings.Split(string(src), "\n"), Variable: variable}
-	return filetpl.Execute(wfile, data)
+	if err := filetpl.Execute(wfile, data); err != nil {
+		return err
+	}
+	return wfile.Close()
 }
 
 func main() {
+	basectx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
+	defer cancel()
 	for path, name := range langs {
 		log.Printf("Get %s's wordlist\n", name)
-		if err := updateWordlist(path, name); err != nil {
+		if err := updateWordlist(basectx, path, name); err != nil {
 			log.Fatalln(err)
 		}
-		log.Printf("Update %s's world list successful\n", name)
+		log.Println("done")
 	}
 	log.Println("Update successful!")
 }
