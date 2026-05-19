@@ -46,10 +46,14 @@ func TestLanguage_String(t *testing.T) {
 			if got := tt.i.String(); got != tt.want {
 				t.Errorf("Language.String() = %v, want %v", got, tt.want)
 			}
+			langName := ToSnakeCaseManual(tt.i.String())
 			if !tt.i.Valid() {
+				got, ok := LanguageByName(langName)
+				if ok {
+					t.Errorf("LanguageByName(%v) = %v, want invalid", langName, got)
+				}
 				return
 			}
-			langName := ToSnakeCaseManual(tt.i.String())
 			if got, ok := LanguageByName(langName); !ok || got != tt.i {
 				t.Errorf("LanguageByName(%v) = %v, want %v", langName, got, tt.i)
 			}

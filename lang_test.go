@@ -95,6 +95,11 @@ func TestLanguage_List(t *testing.T) {
 			want: wordlist.Russian,
 		},
 		{
+			name: "Turkish",
+			lan:  Turkish,
+			want: wordlist.Turkish,
+		},
+		{
 			name: "Unsupports",
 			lan:  math.MaxInt,
 			want: nil,
@@ -135,6 +140,7 @@ func TestLanguage_mapping(t *testing.T) {
 		{"Hindi", Hindi, &hindiMapping},
 		{"Latin", Latin, &latinMapping},
 		{"Russian", Russian, &russianMapping},
+		{"Turkish", Turkish, &turkishMapping},
 		{"Unknown", math.MaxInt, nil},
 	}
 	for _, tt := range tests {
@@ -152,7 +158,7 @@ func TestLanguage_mapping(t *testing.T) {
 
 func TestLanguage_Iter(t *testing.T) {
 	const testMnemonic = "test test test test test test test test test test test "
-	for _, word := range wordlist.English {
+	for _, word := range English.Iter() {
 		tmp := testMnemonic + word
 		if IsMnemonicValid(tmp, English) {
 			break
@@ -178,6 +184,7 @@ func TestLanguage_Words(t *testing.T) {
 		Hindi,
 		Latin,
 		Russian,
+		Turkish,
 	} {
 		words := lan.Words()
 		if len(words) != mnemonicWordCount || cap(words) != mnemonicWordCount {
@@ -192,5 +199,8 @@ func TestLanguage_Words(t *testing.T) {
 				t.Errorf("Language.Words() should return a copy of the word list, but it seems to be a reference to the original list")
 			}
 		}
+	}
+	if got := Language(math.MaxInt).Words(); got != nil {
+		t.Errorf("Language.Words(math.MaxInt) = %v, want nil", got)
 	}
 }

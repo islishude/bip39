@@ -100,26 +100,32 @@ func TestMnemonicByEntropy(t *testing.T) {
 		wantErr bool
 	}{
 		{
+			name:    "invalid language",
+			args:    args{entropy: make([]byte, 1), lang: math.MaxInt},
+			want:    "",
+			wantErr: true,
+		},
+		{
 			name:    "entropy length is less than 16",
-			args:    args{entropy: make([]byte, 1)},
+			args:    args{entropy: make([]byte, 1), lang: English},
 			want:    "",
 			wantErr: true,
 		},
 		{
 			name:    "entropy length is greater than 32",
-			args:    args{entropy: make([]byte, 33)},
+			args:    args{entropy: make([]byte, 33), lang: English},
 			want:    "",
 			wantErr: true,
 		},
 		{
 			name:    "entropy length is not multiple of 4",
-			args:    args{entropy: make([]byte, 17)},
+			args:    args{entropy: make([]byte, 17), lang: English},
 			want:    "",
 			wantErr: true,
 		},
 		{
 			name:    "entropy length is ok",
-			args:    args{entropy: make([]byte, 16), skip: true},
+			args:    args{entropy: make([]byte, 16), lang: English, skip: true},
 			want:    "",
 			wantErr: false,
 		},
@@ -205,7 +211,7 @@ func TestMnemonicVector(t *testing.T) {
 				}
 				lang, ok := LanguageByName(lg)
 				if !ok {
-					t.Skip("unsupport language", lg)
+					t.Errorf("Unsupport language: %s", lg)
 					return
 				}
 				mnemonic, err := NewMnemonicByEntropy(entropy, lang)

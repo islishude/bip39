@@ -24,11 +24,12 @@ func _() {
 	_ = x[Hindi-13]
 	_ = x[Latin-14]
 	_ = x[Russian-15]
+	_ = x[Turkish-16]
 }
 
-const _Language_name = "EnglishChineseSimplifiedChineseTraditionalFrenchItalianJapaneseKoreanSpanishCzechPortugueseDeutschEsperantoGreekHindiLatinRussian"
+const _Language_name = "EnglishChineseSimplifiedChineseTraditionalFrenchItalianJapaneseKoreanSpanishCzechPortugueseDeutschEsperantoGreekHindiLatinRussianTurkish"
 
-var _Language_index = [...]uint8{0, 7, 24, 42, 48, 55, 63, 69, 76, 81, 91, 98, 107, 112, 117, 122, 129}
+var _Language_index = [...]uint8{0, 7, 24, 42, 48, 55, 63, 69, 76, 81, 91, 98, 107, 112, 117, 122, 129, 136}
 
 func (i Language) String() string {
 	idx := int(i) - 0

@@ -10,7 +10,7 @@ import (
 
 const mnemonicWordCount = 2048
 
-//go:generate stringer -type=Language
+//go:generate go tool golang.org/x/tools/cmd/stringer -type=Language
 
 // Language is bip39 word lang type
 type Language int
@@ -33,6 +33,7 @@ const (
 	Hindi
 	Latin
 	Russian
+	Turkish
 )
 
 func LanguageByName(lang string) (Language, bool) {
@@ -69,6 +70,8 @@ func LanguageByName(lang string) (Language, bool) {
 		return Latin, true
 	case "russian":
 		return Russian, true
+	case "turkish":
+		return Turkish, true
 	default:
 		return 0, false
 	}
@@ -160,6 +163,11 @@ func (lan Language) list(copy bool) (res []string) {
 			return append(res, wordlist.Russian...)
 		}
 		return wordlist.Russian
+	case Turkish:
+		if copy {
+			return append(res, wordlist.Turkish...)
+		}
+		return wordlist.Turkish
 	}
 	return nil
 }
@@ -170,7 +178,7 @@ func (lan Language) Words() []string {
 }
 
 func (lan Language) Valid() bool {
-	return lan >= English && lan <= Russian
+	return lan >= English && lan <= Turkish
 }
 
 func (lan Language) Iter() iter.Seq2[int, string] {
@@ -199,6 +207,7 @@ var (
 	hindiOnce              sync.Once
 	latinOnce              sync.Once
 	russianOnce            sync.Once
+	turkishOnce            sync.Once
 )
 
 // Words Mapping
@@ -219,6 +228,7 @@ var (
 	hindiMapping              map[string]int64
 	latinMapping              map[string]int64
 	russianMapping            map[string]int64
+	turkishMapping            map[string]int64
 )
 
 func init() {
@@ -353,6 +363,14 @@ func (lan Language) mapping() map[string]int64 {
 			}
 		})
 		return russianMapping
+	case Turkish:
+		turkishOnce.Do(func() {
+			turkishMapping = make(map[string]int64, mnemonicWordCount)
+			for idx, word := range wordlist.Turkish {
+				turkishMapping[word] = int64(idx)
+			}
+		})
+		return turkishMapping
 	}
 	return nil
 }
